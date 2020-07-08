@@ -67,43 +67,42 @@ export default {
   data() {
     return {
       teacher:{
-        name: '',
-        sort: 0,
-        level: 1,
-        career: '',
-        intro: '',
-        avatar: ''
-      },
-
+        name: ''
+        ,sort: 0
+        ,level: 1
+        ,career: ''
+        ,intro: ''
+        ,avatar: ''
+      }
       //上传弹框组件是否显示
-      imagecropperShow:false,
-      imagecropperKey:0,//上传组件key值
-      BASE_API:process.env.BASE_API, //获取dev.env.js里面地址
-      saveBtnDisabled:false  // 保存按钮是否禁用,
+      ,imagecropperShow: false
+      ,imagecropperKey: 0//上传组件key值
+      ,BASE_API: process.env.BASE_API //获取dev.env.js里面地址
+      ,saveBtnDisabled: false  // 保存按钮是否禁用,
     }
-  },
-  created() { //页面渲染之前执行
+  }
+  ,created() { //页面渲染之前执行
     this.init()
-  },
-  watch: {  //监听
+  }
+  ,watch: {  //监听
     $route(to, from) { //路由变化方式，路由发生变化，方法就会执行
       this.init()
     }
-  },
-  methods:{
+  }
+  ,methods: {
     close() { //关闭上传弹框的方法
-        this.imagecropperShow=false
+        this.imagecropperShow = false;
         //上传组件初始化
-        this.imagecropperKey = this.imagecropperKey+1
-    },
+        this.imagecropperKey = this.imagecropperKey + 1;
+    }
     //上传成功方法
-    cropSuccess(data) {
+    ,cropSuccess(data) {
       this.imagecropperShow=false
       //上传之后接口返回图片地址
       this.teacher.avatar = data.url
       this.imagecropperKey = this.imagecropperKey+1
-    },
-    init() {
+    }
+    ,init() {
       //判断路径有id值,做修改
       if(this.$route.params && this.$route.params.id) {
           //从路径获取id值
@@ -114,15 +113,15 @@ export default {
         //清空表单
         this.teacher = {}
       }
-    },
+    }
     //根据讲师id查询的方法
-    getInfo(id) {
+    ,getInfo(id) {
       teacherApi.getTeacherInfo(id)
         .then(response => {
           this.teacher = response.data.teacher
         })
-    },
-    saveOrUpdate() {
+    }
+    ,saveOrUpdate() {
       //判断修改还是添加
       //根据teacher是否有id
       if(!this.teacher.id) {
@@ -132,9 +131,9 @@ export default {
         //修改
         this.updateTeacher()
       }
-    },
+    }
     //修改讲师的方法
-    updateTeacher() {
+    ,updateTeacher() {
       teacherApi.updateTeacherInfo(this.teacher)
         .then(response => {
           //提示信息
@@ -145,9 +144,9 @@ export default {
           //回到列表页面 路由跳转
           this.$router.push({path:'/teacher/table'})
         })
-    },
+    }
     //添加讲师的方法
-    saveTeacher() {
+    ,saveTeacher() {
       teacherApi.addTeacher(this.teacher)
         .then(response => {//添加成功
           //提示信息
@@ -159,7 +158,6 @@ export default {
           this.$router.push({path:'/teacher/table'})
         })
     }
-
   }
 }
 </script>
