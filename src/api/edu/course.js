@@ -9,4 +9,10 @@ export default {
             ,data: courseInfo
         })
     }
+    ,getListTeacher() {
+        return request({
+            url: `/eduservice/teacher/findAll`
+            ,method: 'get'
+        })
+    }
 }
