@@ -17,6 +17,17 @@
         </el-form-item>
 
         <!-- 所属分类 TODO -->
+        <el-form-item label="课程分类">
+            <el-select
+                v-model="courseInfo.subjectParentId"
+                placeholder="一级分类">
+                <el-option
+                    v-for="subject in subjectOneList"
+                    :key="subject.id"
+                    :label="subject.title"
+                    :value="subject.id"/>
+            </el-select>
+        </el-form-item>
 
         <!-- 课程讲师 -->
         <el-form-item label="课程讲师">
@@ -54,14 +65,16 @@
   </div>
 </template>
 <script>
-import course from '@/api/edu/course'
+import course from '@/api/edu/course';
+import subject from '@/api/edu/subject';
 export default {
   data() {
     return {
       saveBtnDisabled: false // 保存按钮是否禁用
       ,courseInfo: {
             title: '',
-            subjectId: '',
+            subjectId: '',  // 二级分类ID
+            subjectParentId: '', // 一级分类ID
             teacherId: '',
             lessonNum: 0,
             description: '',
@@ -69,15 +82,26 @@ export default {
             price: 0
       }
       ,teacherList: []
+      ,subjectOneList: []
+      ,subjectTwoList: []
     }
   },
 
   created() {
     // 初始化所有讲师
     this.getListTeacher();
+    // 初始化一级分类
+    this.getOneSubject();
   },
 
   methods: {
+    // 查询所有的一级分类
+    getOneSubject() {
+      subject.getSubjectList()
+        .then(response => {
+          this.subjectOneList =  response.data.list;
+        })
+    },
     getListTeacher() {
         course.getListTeacher()
             .then(response =>{
