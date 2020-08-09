@@ -7,8 +7,15 @@
     <el-steps :active="2" process-status="wait" align-center style="margin-bottom: 40px;">
       <el-step title="填写课程基本信息"/>
       <el-step title="创建课程大纲"/>
-      <el-step title="提交审核"/>
+      <el-step title="最终发布"/>
     </el-steps>
+
+    <ul>
+      <li v-for="chapter in chapterVideoList" :key="chapter.id">
+        {{chapter.title}}
+      </li>
+    </ul>
+    
 
     <el-form label-width="120px">
 
@@ -21,20 +28,37 @@
 </template>
 
 <script>
+import chapter from '@/api/edu/chapter'
 
 export default {
   data() {
     return {
       saveBtnDisabled: false // 保存按钮是否禁用
+      ,chapterVideoList: []
+      ,courseId: '' // 课程Id
     }
   },
 
   created() {
-    console.log('chapter created')
+    // console.log('chapter created')
+    // 获取路由的id值
+    if (this.$route.params 
+      && this.$route.params.id) {
+        this.courseId = this.$route.params.id;
+      }
+    // 根据课程id查询章节和小节
+    this.getChapterVideo();
   },
 
   methods: {
-    previous() {
+    // 根据课程id查询章节和小节
+    getChapterVideo() {
+      chapter.getAllChapterVide(this.courseId)
+        .then(response => {
+          this.chapterVideoList = response.data.allChapterVideo;
+        })
+    }
+    ,previous() {
       console.log('previous')
       this.$router.push({ path: '/edu/course/info/1' })
     },
