@@ -109,11 +109,18 @@ export default {
       ,teacherList: []
       ,subjectOneList: []
       ,subjectTwoList: []
+      ,courseId: ''
       ,BASE_API: process.env.BASE_API //获取dev.env.js里面地址
     }
   },
 
   created() {
+    // 获取路由id值
+    if (this.$route.params && this.$route.params.id) {
+      this.courseId = this.$route.params.id;
+      // 调用根据id查询课程的方法
+      this.getInfo();
+    }
     // 初始化所有讲师
     this.getListTeacher();
     // 初始化一级分类
@@ -121,8 +128,15 @@ export default {
   },
 
   methods: {
+    // 根据课程id查询信息
+    getInfo() {
+      course.getCourseInfoId(this.courseId)
+        .then(response => {
+          this.courseInfo = response.data.courseInfoVo;
+        })
+    }
     // 上传封面成功调用的方法
-    handleAvatarSuccess(res,file) {
+    ,handleAvatarSuccess(res,file) {
       this.courseInfo.cover = res.data.url;
     }
     // 上传之前调用的方法
