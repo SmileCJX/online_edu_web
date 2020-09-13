@@ -115,22 +115,40 @@ export default {
   },
 
   created() {
-    // 获取路由id值
-    if (this.$route.params && this.$route.params.id) {
-      this.courseId = this.$route.params.id;
-      // 调用根据id查询课程的方法
-      this.getInfo();
-    } else {
-      // 初始化所有讲师
-      this.getListTeacher();
-      // 初始化一级分类
-      this.getOneSubject();
+    this.init();
+  }
+  ,watch: {  //监听
+    $route(to, from) { //路由变化方式，路由发生变化，方法就会执行
+      this.init()
     }
   },
 
   methods: {
+    init() {
+      // 获取路由id值
+      if (this.$route.params && this.$route.params.id) {
+        this.courseId = this.$route.params.id;
+        // 调用根据id查询课程的方法
+        this.getInfo();
+      } else { //路径没有id值，做添加
+        this.courseInfo = {
+          title: '',
+            subjectId: '',  // 二级分类ID
+            subjectParentId: '', // 一级分类ID
+            teacherId: '',
+            lessonNum: 0,
+            description: '',
+            cover: '/static/01.jpg',
+            price: 0
+        }
+        // 初始化所有讲师
+        this.getListTeacher();
+        // 初始化一级分类
+        this.getOneSubject();
+      }
+    }
     // 根据课程id查询信息
-    getInfo() {
+    ,getInfo() {
       course.getCourseInfoId(this.courseId)
         .then(response => {
           // 在courseInfo课程基本信息，包含一级分类id 和 二级分类id
