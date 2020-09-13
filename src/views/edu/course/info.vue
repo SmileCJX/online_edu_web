@@ -120,11 +120,12 @@ export default {
       this.courseId = this.$route.params.id;
       // 调用根据id查询课程的方法
       this.getInfo();
+    } else {
+      // 初始化所有讲师
+      this.getListTeacher();
+      // 初始化一级分类
+      this.getOneSubject();
     }
-    // 初始化所有讲师
-    this.getListTeacher();
-    // 初始化一级分类
-    this.getOneSubject();
   },
 
   methods: {
@@ -132,7 +133,26 @@ export default {
     getInfo() {
       course.getCourseInfoId(this.courseId)
         .then(response => {
+          // 在courseInfo课程基本信息，包含一级分类id 和 二级分类id
           this.courseInfo = response.data.courseInfoVo;
+          // 1 查询所有的分类，包含一级和二级
+          subject.getSubjectList()
+            .then(response => {
+              // 2 获取所有一级分类
+              this.subjectOneList = response.data.list;
+              // 3 把所有的一级分类数组进行遍历
+              for (var i = 0; i < this.subjectOneList.length; i++) {
+                // 获取每个一级分类
+                var oneSubject = this.subjectOneList[i];
+                // 比较当前courseInfo里面的一级分类id和所有的一级分类id
+                if (this.courseInfo.subjectParentId == oneSubject.id) {
+                  // 获取一级分类所有的二级分类
+                  this.subjectTwoList = oneSubject.children;
+                }
+              }
+            })
+            // 初始化所有讲师
+            this.getListTeacher();
         })
     }
     // 上传封面成功调用的方法
