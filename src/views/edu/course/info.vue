@@ -218,16 +218,39 @@ export default {
                 this.teacherList = response.data.items;
         })
     } 
-    ,saveOrUpdate() {  
-      course.addCourseInfo(this.courseInfo)
+    // 添加课程
+    ,addCourse() {
+        course.addCourseInfo(this.courseInfo)
+          .then(response => {
+              // 提示
+              this.$message({
+                  type: 'success',
+                  message: '添加课程信息成功'
+              })
+              this.$router.push({ path: '/course/chapter/' + response.data.courseId })
+          })
+    }
+    // 修改课程
+    ,updateCourse() {
+      course.updateCourseInfo(this.courseInfo)
         .then(response => {
             // 提示
             this.$message({
                 type: 'success',
-                message: '添加课程信息成功'
+                message: '修改课程信息成功'
             })
-            this.$router.push({ path: '/course/chapter/' + response.data.courseId })
+            this.$router.push({ path: '/course/chapter/' + this.courseId });
         })
+    }
+    ,saveOrUpdate() {  
+      // 判断添加还是修改
+      if (!this.courseInfo.id) {
+        // 添加
+        this.addCourse()
+      } else {
+        // 修改
+        this.updateCourse();
+      }
       
     }
   }
