@@ -10,46 +10,59 @@
       <el-step title="最终发布"/>
     </el-steps>
 
-    <!-- 章节 -->
+    <el-button type="text"  @click="dialogChapterFormVisible = true">添加章节</el-button>
+
     <ul class="chanpterList">
-        <li
-            v-for="chapter in chapterVideoList"
-            :key="chapter.id">
-            <p>
-                {{ chapter.title }}
-<!-- 
-                <span class="acts">
-                    <el-button type="text">添加课时</el-button>
-                    <el-button style="" type="text">编辑</el-button>
-                    <el-button type="text">删除</el-button>
-                </span> -->
-            </p>
+      <li
+          v-for="chapter in chapterNestedList"
+          :key="chapter.id">
+          <p>
+              {{ chapter.title }}
 
-            <!-- 视频 -->
-            <ul class="chanpterList videoList">
-                <li
-                    v-for="video in chapter.children"
-                    :key="video.id">
-                    <p>{{ video.title }}
-                        <!-- <span class="acts">
-                            <el-button type="text">编辑</el-button>
-                            <el-button type="text">删除</el-button>
-                        </span> -->
-                    </p>
-                </li>
-            </ul>
-        </li>
+              <span class="acts">
+                  <el-button type="text">添加课时</el-button>
+                  <el-button style="" type="text">编辑</el-button>
+                  <el-button type="text">删除</el-button>
+              </span>
+          </p>
+
+          <!-- 视频 -->
+          <ul class="chanpterList videoList">
+              <li
+                  v-for="video in chapter.children"
+                  :key="video.id">
+                  <p>{{ video.title }}
+                      <span class="acts">
+                          <el-button type="text">编辑</el-button>
+                          <el-button type="text">删除</el-button>
+                      </span>
+                  </p>
+              </li>
+          </ul>
+      </li>
     </ul>
-    
-
-    <el-form label-width="120px">
-
-      <el-form-item>
+    <div>
         <el-button @click="previous">上一步</el-button>
         <el-button :disabled="saveBtnDisabled" type="primary" @click="next">下一步</el-button>
-      </el-form-item>
-    </el-form>
+    </div>
+
+    <!-- 添加和修改章节表单 -->
+    <el-dialog :visible.sync="dialogChapterFormVisible" title="添加章节">
+        <el-form :model="chapter" label-width="120px">
+            <el-form-item label="章节标题">
+                <el-input v-model="chapter.title"/>
+            </el-form-item>
+            <el-form-item label="章节排序">
+                <el-input-number v-model="chapter.sort" :min="0" controls-position="right"/>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogChapterFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveOrUpdate">确 定</el-button>
+        </div>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -61,6 +74,10 @@ export default {
       saveBtnDisabled: false // 保存按钮是否禁用
       ,chapterVideoList: []
       ,courseId: '' // 课程Id
+      ,chapter: { // 封装章节数据
+
+      }
+      ,dialogChapterFormVisible: false // 章节弹框
     }
   },
 
